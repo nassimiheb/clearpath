@@ -16,7 +16,7 @@ class FakeMatcher:
             customer_note="SSO is actively planned for Q2.",
         )
 
-    def dashboard_insight(self, checks):
+    def dashboard_insight(self, checks, variant=0):
         return ClaudeDashboardInsight(
             headline="Two SSO deals worth €80,000 need attention.",
             summary="Enterprise SSO is the strongest revenue signal.",
@@ -171,6 +171,7 @@ def test_dashboard_insight_is_generated_and_persisted(client, db):
     response = client.post("/dashboard/insight", follow_redirects=True)
     assert response.status_code == 200
     assert "Two SSO deals worth €80,000 need attention." in response.text
+    assert "Insight refreshed" in response.text
     assert db.query(DashboardInsight).count() == 1
 
 

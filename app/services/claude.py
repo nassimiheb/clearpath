@@ -93,7 +93,9 @@ class ClaudeMatcher:
             f"Customer demand:\n{json.dumps(demand)}"
         )
 
-    def dashboard_insight(self, checks: list[CustomerCheck]) -> ClaudeDashboardInsight:
+    def dashboard_insight(
+        self, checks: list[CustomerCheck], variant: int = 0
+    ) -> ClaudeDashboardInsight:
         if not self.api_key:
             raise ClaudeServiceError("ANTHROPIC_API_KEY is not configured.")
         if not checks:

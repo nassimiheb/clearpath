@@ -7,7 +7,7 @@ from fastapi import Depends, FastAPI, File, Form, HTTPException, Request, Upload
 from fastapi.responses import JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
 from app.config import get_settings
@@ -391,14 +391,16 @@ def create_app() -> FastAPI:
                 "opportunities": build_opportunities(checks),
                 "insight": insight,
                 "error": request.query_params.get("error"),
+                "message": request.query_params.get("message"),
             },
         )
 
     @app.post("/dashboard/insight")
     def generate_dashboard_insight(request: Request, db: Session = Depends(get_db)):
         checks = list(db.scalars(select(CustomerCheck).order_by(CustomerCheck.created_at.desc())))
+        insight_count = db.scalar(select(func.count(DashboardInsight.id))) or 0
         try:
-            result = request.app.state.claude_matcher.dashboard_insight(checks)
+            result = request.app.state.claude_matcher.dashboard_insight(checks, variant=insight_count)
         except ClaudeServiceError as exc:
             return RedirectResponse(f"/dashboard?error={quote_plus(str(exc))}", status_code=303)
         db.add(
@@ -409,7 +411,7 @@ def create_app() -> FastAPI:
             )
         )
         db.commit()
-        return RedirectResponse("/dashboard", status_code=303)
+        return RedirectResponse("/dashboard?message=Insight+refreshed", status_code=303)
 
     return app
 

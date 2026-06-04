@@ -143,6 +143,33 @@ def test_demo_matcher_generates_dashboard_insight_without_api():
     assert "€48,000" in insight.headline
 
 
+def test_demo_matcher_rotates_dashboard_insight_themes():
+    checks = [
+        CustomerCheck(
+            request_text="Need SSO",
+            request_theme="Enterprise SSO",
+            alignment=Alignment.not_on_roadmap,
+            confidence=88,
+            reasoning="No match",
+            customer_note="Recorded",
+            deal_value=48000,
+            deal_blocker=True,
+        ),
+        CustomerCheck(
+            request_text="Need AI summaries",
+            request_theme="AI summaries",
+            alignment=Alignment.not_on_roadmap,
+            confidence=88,
+            reasoning="No match",
+            customer_note="Recorded",
+            deal_value=30000,
+        ),
+    ]
+    first = DemoMatcher().dashboard_insight(checks, variant=0)
+    second = DemoMatcher().dashboard_insight(checks, variant=1)
+    assert first.headline != second.headline
+
+
 def test_demo_seed_populates_dynamic_data_and_is_idempotent(db):
     seed_demo_data(db)
     roadmap_count = db.query(RoadmapItem).count()

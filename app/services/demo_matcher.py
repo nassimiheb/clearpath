@@ -89,7 +89,9 @@ class DemoMatcher:
             customer_note=customer_note,
         )
 
-    def dashboard_insight(self, checks: list[CustomerCheck]) -> ClaudeDashboardInsight:
+    def dashboard_insight(
+        self, checks: list[CustomerCheck], variant: int = 0
+    ) -> ClaudeDashboardInsight:
         if not checks:
             raise ClaudeServiceError("Run or import at least one request before generating insight.")
         groups = defaultdict(list)
@@ -98,15 +100,15 @@ class DemoMatcher:
         ranked = sorted(
             groups.items(),
             key=lambda item: (
-                sum(check.deal_blocker for check in item[1]),
-                sum(check.deal_value for check in item[1]),
+                sum(bool(check.deal_blocker) for check in item[1]),
+                sum(check.deal_value or 0 for check in item[1]),
                 len(item[1]),
             ),
             reverse=True,
         )
-        theme, group = ranked[0]
-        blockers = sum(check.deal_blocker for check in group)
-        value = sum(check.deal_value for check in group)
+        theme, group = ranked[variant % len(ranked)]
+        blockers = sum(bool(check.deal_blocker) for check in group)
+        value = sum(check.deal_value or 0 for check in group)
         uncovered = Counter(check.alignment for check in group)[Alignment.not_on_roadmap]
         request_label = "request" if len(group) == 1 else "requests"
         blocker_label = "deal blocker" if blockers == 1 else "deal blockers"
