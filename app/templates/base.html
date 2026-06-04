@@ -17,6 +17,7 @@
       <a class="{{ 'active' if request.url.path == '/dashboard' else '' }}" href="/dashboard">Dashboard</a>
     </nav>
   </header>
+  {% if demo_mode %}<div class="demo-banner"><strong>Safe demo mode</strong><span>Local deterministic matching is active. No customer data or API key is sent to Anthropic.</span></div>{% endif %}
   <main>{% block content %}{% endblock %}</main>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
   <div class="loading-overlay" id="loading-overlay" role="status" aria-live="polite" aria-hidden="true">

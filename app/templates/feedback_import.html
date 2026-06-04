@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Import feedback · ClearPath{% endblock %}
 {% block content %}
-<div class="page-head"><h1>Import customer feedback</h1><p>Upload customer requests and run a bulk Claude roadmap check.</p></div>
+<div class="page-head"><h1>Import customer feedback</h1><p>Upload customer requests and run a bulk roadmap check.</p></div>
 {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
 {% if imported %}<div class="alert success">Imported and checked {{ imported|length }} request{{ "s" if imported|length != 1 else "" }}. <a href="/dashboard">View opportunities</a></div>{% endif %}
 {% if failures %}<div class="alert error"><strong>{{ failures|length }} request{{ "s" if failures|length != 1 else "" }} failed:</strong><ul>{% for failure in failures %}<li>{{ failure }}</li>{% endfor %}</ul></div>{% endif %}

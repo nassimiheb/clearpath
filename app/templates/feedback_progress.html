@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Import progress · ClearPath{% endblock %}
 {% block content %}
-<div class="page-head"><h1>Checking imported feedback</h1><p>Claude is comparing each request against the active roadmap.</p></div>
+<div class="page-head"><h1>Checking imported feedback</h1><p>ClearPath is comparing each request against the active roadmap.</p></div>
 <section class="card import-progress-card" data-job-id="{{ job.id }}">
   <div class="progress-heading"><div><span class="progress-status" id="progress-status">Processing requests</span><h2><span id="progress-processed">{{ job.processed }}</span> of <span id="progress-total">{{ job.total }}</span> checked</h2><p id="progress-current">{{ job.current_company or "Preparing import..." }}</p></div><strong id="progress-percent">{{ job.percent }}%</strong></div>
   <div class="progress-track"><div id="progress-bar" style="width:{{ job.percent }}%"></div></div>

@@ -15,6 +15,7 @@ from app.database import Base, SessionLocal, engine, get_db
 from app.migrations import migrate_database
 from app.models import Alignment, CustomerCheck, DashboardInsight, RoadmapItem, utcnow
 from app.services.claude import ClaudeMatcher, ClaudeServiceError
+from app.services.demo_matcher import DemoMatcher
 from app.services.imports import FeedbackImportError, parse_feedback_csv
 from app.services.import_jobs import ImportJob, ImportJobManager
 from app.services.notion import NotionService, NotionSyncError
@@ -106,7 +107,12 @@ def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(title=settings.app_name, lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=ROOT / "static"), name="static")
-    app.state.claude_matcher = ClaudeMatcher(settings.anthropic_api_key, settings.anthropic_model)
+    app.state.claude_matcher = (
+        DemoMatcher()
+        if settings.matching_provider.lower() == "demo"
+        else ClaudeMatcher(settings.anthropic_api_key, settings.anthropic_model)
+    )
+    templates.env.globals["demo_mode"] = settings.matching_provider.lower() == "demo"
     app.state.notion_service = NotionService(settings.notion_token, settings.notion_data_source_id)
     app.state.import_jobs = ImportJobManager()
     app.state.session_factory = SessionLocal

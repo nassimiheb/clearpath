@@ -7,6 +7,7 @@ from app.migrations import migrate_database
 from app.models import Alignment, CustomerCheck, RoadmapItem
 from app.schemas import ClaudeDashboardInsight, ClaudeMatch
 from app.services.claude import ClaudeMatcher
+from app.services.demo_matcher import DemoMatcher
 from app.services.imports import FeedbackImportError, parse_feedback_csv
 from app.services.notion import NotionService, NotionSyncError
 
@@ -104,6 +105,41 @@ def test_dashboard_prompt_contains_revenue_risk_data():
     assert "Enterprise SSO" in prompt
     assert "48000" in prompt
     assert '"deal_blocker": true' in prompt
+
+
+def test_demo_matcher_handles_direct_and_uncovered_requests():
+    matcher = DemoMatcher()
+    roadmap = [
+        RoadmapItem(id=1, name="SSO / SAML integration", description="Enterprise login"),
+        RoadmapItem(id=2, name="Audit logs", description="Compliance history"),
+    ]
+    direct = matcher.match("Our IT team requires SAML single sign-on", roadmap)
+    uncovered = matcher.match("Please add automatic AI meeting summaries", roadmap)
+    assert direct.alignment == Alignment.on_roadmap
+    assert direct.matched_roadmap_item_id == 1
+    assert direct.request_theme == "Enterprise SSO"
+    assert uncovered.alignment == Alignment.not_on_roadmap
+    assert uncovered.request_theme == "AI summaries"
+
+
+def test_demo_matcher_generates_dashboard_insight_without_api():
+    insight = DemoMatcher().dashboard_insight(
+        [
+            CustomerCheck(
+                company="Acme",
+                request_text="Need SSO",
+                request_theme="Enterprise SSO",
+                alignment=Alignment.not_on_roadmap,
+                confidence=88,
+                reasoning="No match",
+                customer_note="Recorded",
+                deal_value=48000,
+                deal_blocker=True,
+            )
+        ]
+    )
+    assert "Enterprise SSO" in insight.headline
+    assert "€48,000" in insight.headline
 
 
 def test_notion_schema_validation():

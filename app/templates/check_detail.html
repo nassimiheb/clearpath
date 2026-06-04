@@ -9,7 +9,7 @@
 <div class="two-col">
   <div>
     <section class="card content-card"><h3>Customer request</h3><blockquote>{{ check.request_text }}</blockquote></section>
-    <section class="card content-card"><h3>Claude's analysis</h3><p>{{ check.reasoning }}</p><h3>What to tell the customer</h3><div class="note">{{ check.customer_note }}</div></section>
+    <section class="card content-card"><h3>ClearPath analysis</h3><p>{{ check.reasoning }}</p><h3>What to tell the customer</h3><div class="note">{{ check.customer_note }}</div></section>
     <section class="card content-card"><h3>Activity</h3><div class="activity-list">
       <div class="activity-item complete"><span></span><div><strong>Request checked</strong><small>{{ check.created_at.strftime("%b %d, %Y at %H:%M") }}</small></div></div>
       <div class="activity-item {{ 'complete' if check.product_shared_at else '' }}"><span></span><div><strong>Shared with product</strong><small>{{ check.product_shared_at.strftime("%b %d, %Y at %H:%M") if check.product_shared_at else "Not shared yet" }}</small></div></div>
@@ -29,7 +29,7 @@ Theme: {{ check.request_theme or "Uncategorized" }}
 Alignment: {{ alignment_label(check.alignment) }}
 Deal value: {{ format_deal_value(check.deal_value) }}
 Deal blocker: {{ "Yes" if check.deal_blocker else "No" }}
-Claude analysis: {{ check.reasoning }}</textarea>
+ClearPath analysis: {{ check.reasoning }}</textarea>
     <button class="button secondary action-button copy-action" data-copy-target="customer-note-copy">Copy customer response</button>
     <button class="button secondary action-button copy-action" data-copy-target="product-share-copy" data-track-url="/checks/{{ check.id }}/shared-with-product">Share with product</button>
     <form method="post" action="/checks/{{ check.id }}/customer-updated"><button class="button secondary action-button" type="submit">Mark customer updated</button></form>

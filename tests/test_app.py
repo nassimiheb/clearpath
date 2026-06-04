@@ -56,7 +56,7 @@ def test_check_requires_roadmap(client):
 def test_long_running_forms_include_loading_states(client):
     check_page = client.get("/checks/new").text
     import_page = client.get("/feedback/import").text
-    assert "Claude is checking the roadmap" in check_page
+    assert "ClearPath is checking the roadmap" in check_page
     assert "Import and run checks" in import_page
     assert 'id="loading-overlay"' in check_page
 

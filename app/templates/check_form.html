@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}Check request · ClearPath{% endblock %}
 {% block content %}
-<div class="page-head"><h1>Check a customer request</h1><p>Describe what the customer needs. Claude checks it against your active roadmap.</p></div>
+<div class="page-head"><h1>Check a customer request</h1><p>Describe what the customer needs. ClearPath checks it against your active roadmap.</p></div>
 {% if error %}<div class="alert error">{{ error }}</div>{% endif %}
 <div class="two-col">
   <section class="card">
-    <form method="post" action="/checks" data-loading-title="Claude is checking the roadmap" data-loading-message="Understanding the request, comparing roadmap items, and preparing a customer-ready answer...">
+    <form method="post" action="/checks" data-loading-title="ClearPath is checking the roadmap" data-loading-message="Understanding the request, comparing roadmap items, and preparing a customer-ready answer...">
       <div class="form-grid">
         <label>Company<input name="company" value="{{ company or '' }}" placeholder="Acme Corp"></label>
         <label>Contact<input name="contact" value="{{ contact or '' }}" placeholder="Sarah Chen"></label>

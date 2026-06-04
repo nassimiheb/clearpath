@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: clearpath-demo
+    runtime: docker
+    plan: free
+    healthCheckPath: /checks/new
+    envVars:
+      - key: MATCHING_PROVIDER
+        value: demo
+      - key: DATABASE_URL
+        value: sqlite:////tmp/clearpath.db
