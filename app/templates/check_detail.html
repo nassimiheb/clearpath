@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Request detail · ClearPath{% endblock %}
+{% block content %}
+<div class="page-head inline"><div><h1>{{ check.company or "Customer request" }} {% if check.resolved %}<span class="resolved-badge">Resolved</span>{% endif %}</h1><p>{{ check.contact or "No contact provided" }} · {{ check.created_at.strftime("%b %d, %Y %H:%M") }}</p></div><a class="button secondary" href="/checks/new">New check</a></div>
+{% if message %}<div class="alert success">{{ message }}</div>{% endif %}
+<section class="result {{ check.alignment.value }}">
+  <div class="result-title"><span class="result-icon">{{ "✓" if check.alignment.value == "on_roadmap" else ("◑" if check.alignment.value == "partial" else "×") }}</span><div><h2>{{ alignment_label(check.alignment) }}</h2><p>{{ check.confidence }}% confidence</p></div></div>
+</section>
+<div class="two-col">
+  <div>
+    <section class="card content-card"><h3>Customer request</h3><blockquote>{{ check.request_text }}</blockquote></section>
+    <section class="card content-card"><h3>Claude's analysis</h3><p>{{ check.reasoning }}</p><h3>What to tell the customer</h3><div class="note">{{ check.customer_note }}</div></section>
+    <section class="card content-card"><h3>Activity</h3><div class="activity-list">
+      <div class="activity-item complete"><span></span><div><strong>Request checked</strong><small>{{ check.created_at.strftime("%b %d, %Y at %H:%M") }}</small></div></div>
+      <div class="activity-item {{ 'complete' if check.product_shared_at else '' }}"><span></span><div><strong>Shared with product</strong><small>{{ check.product_shared_at.strftime("%b %d, %Y at %H:%M") if check.product_shared_at else "Not shared yet" }}</small></div></div>
+      <div class="activity-item {{ 'complete' if check.customer_updated_at else '' }}"><span></span><div><strong>Customer updated</strong><small>{{ check.customer_updated_at.strftime("%b %d, %Y at %H:%M") if check.customer_updated_at else "No update recorded" }}</small></div></div>
+      <div class="activity-item {{ 'complete' if check.resolved else '' }}"><span></span><div><strong>Request resolved</strong><small>{{ check.resolved_at.strftime("%b %d, %Y at %H:%M") if check.resolved_at else "Open" }}</small></div></div>
+    </div></section>
+    <section class="card content-card"><h3>Similar requests · {{ check.request_theme or "Uncategorized" }}</h3>
+      <div class="similar-list">{% for item in similar %}<a href="/checks/{{ item.id }}"><span><strong>{{ item.company or "Unknown company" }}</strong><small>{{ item.request_text }}</small></span><span>{{ format_deal_value(item.deal_value) }}</span></a>{% else %}<p class="muted">No similar requests yet.</p>{% endfor %}</div>
+    </section>
+  </div>
+  <aside>
+  <section class="card content-card"><h3>Quick actions</h3><div class="quick-actions">
+    <textarea id="customer-note-copy" class="clipboard-source" readonly>{{ check.customer_note }}</textarea>
+    <textarea id="product-share-copy" class="clipboard-source" readonly>Customer request: {{ check.request_text }}
+Company: {{ check.company or "Not specified" }}
+Theme: {{ check.request_theme or "Uncategorized" }}
+Alignment: {{ alignment_label(check.alignment) }}
+Deal value: {{ format_deal_value(check.deal_value) }}
+Deal blocker: {{ "Yes" if check.deal_blocker else "No" }}
+Claude analysis: {{ check.reasoning }}</textarea>
+    <button class="button secondary action-button copy-action" data-copy-target="customer-note-copy">Copy customer response</button>
+    <button class="button secondary action-button copy-action" data-copy-target="product-share-copy" data-track-url="/checks/{{ check.id }}/shared-with-product">Share with product</button>
+    <form method="post" action="/checks/{{ check.id }}/customer-updated"><button class="button secondary action-button" type="submit">Mark customer updated</button></form>
+    <form method="post" action="/checks/{{ check.id }}/resolve"><button class="button action-button {{ 'secondary' if check.resolved else '' }}" type="submit">{{ "Reopen request" if check.resolved else "Mark resolved" }}</button></form>
+  </div></section>
+  <section class="card content-card"><h3>Deal context</h3><dl><dt>Value</dt><dd>{{ format_deal_value(check.deal_value) }}</dd><dt>Stage</dt><dd>{{ check.deal_stage or "Not set" }}</dd><dt>Blocker</dt><dd>{{ "Yes" if check.deal_blocker else "No" }}</dd><dt>Source</dt><dd>{{ check.source|upper }}</dd></dl></section>
+  <section class="card content-card"><h3>Matching roadmap item</h3>
+    {% if check.matched_roadmap_item %}
+      <h2>{{ check.matched_roadmap_item.name }}</h2>
+      <p>{{ check.matched_roadmap_item.description }}</p>
+      <dl><dt>Status</dt><dd>{{ check.matched_roadmap_item.status }}</dd><dt>Quarter</dt><dd>{{ check.matched_roadmap_item.quarter or "Not set" }}</dd><dt>Priority</dt><dd>{{ check.matched_roadmap_item.priority }}</dd></dl>
+    {% else %}<p class="muted">No roadmap item matched.</p>{% endif %}
+  </section></aside>
+</div>
+{% endblock %}

@@ -1,0 +1,904 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ClearPath — Prototype Screens</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f5f6fa;
+  --white:#ffffff;
+  --ink:#0d1117;
+  --ink2:#3d4451;
+  --ink3:#6b7280;
+  --ink4:#9ca3af;
+  --border:#e2e5ec;
+  --border2:#c8cdd8;
+  --blue:#2860f4;
+  --blue-lt:#eef2fe;
+  --blue-border:#c7d5fc;
+  --green:#0f7b4d;
+  --green-lt:#eaf7f1;
+  --green-border:#a3e6c9;
+  --green-dot:#22c55e;
+  --amber:#92400e;
+  --amber-lt:#fef8ec;
+  --amber-border:#fcd34d;
+  --amber-dot:#f59e0b;
+  --red:#b91c1c;
+  --red-lt:#fef2f2;
+  --red-border:#fecaca;
+  --red-dot:#ef4444;
+  --purple:#6d28d9;
+  --purple-lt:#f4f0ff;
+  --r:10px;
+  --sh:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
+  --sh2:0 4px 16px rgba(0,0,0,.09),0 2px 4px rgba(0,0,0,.04);
+}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:#e8eaf0;min-height:100vh;color:var(--ink)}
+button{font-family:'Plus Jakarta Sans',sans-serif;cursor:pointer}
+
+/* ── SCREEN SWITCHER (meta UI) ──────── */
+.screen-picker{
+  background:var(--ink);padding:14px 28px;
+  display:flex;align-items:center;gap:16px;flex-wrap:wrap;
+  position:sticky;top:0;z-index:999;
+}
+.screen-picker-label{color:#6b7280;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.screen-pills{display:flex;gap:5px;flex-wrap:wrap}
+.spill{padding:5px 13px;border-radius:20px;border:1px solid #333;background:transparent;color:#9ca3af;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap}
+.spill:hover{border-color:#555;color:#e5e7eb}
+.spill.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.screen-note{margin-left:auto;font-size:11px;color:#4b5563;font-family:'JetBrains Mono',monospace}
+
+/* ── APP CHROME ─────────────────────── */
+.app-frame{max-width:1200px;margin:0 auto;padding:24px 20px 60px}
+
+/* HEADER */
+.app-header{
+  background:var(--white);border:1px solid var(--border);border-radius:12px;
+  height:56px;padding:0 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:2px;box-shadow:var(--sh);
+}
+.hdr-left{display:flex;align-items:center;gap:11px}
+.hdr-logo{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.hdr-name{font-size:14px;font-weight:800;letter-spacing:-.02em}
+.hdr-sub{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--ink4);margin-top:1px;letter-spacing:.04em}
+.hdr-nav{display:flex;gap:3px}
+.hn{padding:6px 14px;border-radius:7px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--ink3);transition:all .15s}
+.hn.active{background:var(--blue);color:#fff}
+.hdr-avatar{width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+
+/* ── SCREENS ────────────────────────── */
+.screen{display:none}.screen.active{display:block}
+
+/* page titles */
+.ptitle{font-size:20px;font-weight:800;letter-spacing:-.03em;margin-bottom:4px}
+.psub{font-size:13px;color:var(--ink3);margin-bottom:24px;line-height:1.5}
+
+/* ── CARDS ──────────────────────────── */
+.card{background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh)}
+.card-head{padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.card-head-title{font-size:13px;font-weight:700;letter-spacing:-.01em}
+.card-head-sub{font-size:11px;color:var(--ink4);margin-top:1px}
+.card-body{padding:20px}
+
+/* ── FORM ELEMENTS ──────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+.fg label{display:block;font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px}
+.fg .fi{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:13px;color:var(--ink);font-family:'Plus Jakarta Sans',sans-serif;background:var(--white);outline:none}
+.fg .fi:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,96,244,.08)}
+.fg .fi::placeholder{color:var(--ink4)}
+.fi-focus{border-color:var(--blue) !important;box-shadow:0 0 0 3px rgba(40,96,244,.08) !important}
+textarea.fi{resize:none;line-height:1.6}
+
+/* source selector */
+.source-row{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.src-pill{padding:7px 13px;border-radius:8px;border:1.5px solid var(--border);background:var(--white);font-size:12px;font-weight:600;color:var(--ink3);display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .15s}
+.src-pill:hover{border-color:var(--blue);color:var(--blue);background:var(--blue-lt)}
+.src-pill.selected{border-color:var(--blue);background:var(--blue-lt);color:var(--blue)}
+.src-pill svg{flex-shrink:0}
+.src-pill .src-badge{font-size:10px;font-weight:700;padding:1px 5px;border-radius:3px;background:rgba(40,96,244,.12);color:var(--blue)}
+
+/* or divider */
+.or-div{display:flex;align-items:center;gap:10px;margin:12px 0;color:var(--ink4);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.or-div::before,.or-div::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ── BUTTONS ────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:7px;border:none;border-radius:8px;padding:10px 20px;font-size:13px;font-weight:600;transition:all .15s;white-space:nowrap;cursor:pointer;font-family:'Plus Jakarta Sans',sans-serif}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#1a4fd6}
+.btn-ghost{background:transparent;border:1.5px solid var(--border);color:var(--ink2)}
+.btn-ghost:hover{border-color:var(--border2);background:var(--bg)}
+.btn-sm{padding:7px 14px;font-size:12px}
+.btn-xs{padding:5px 11px;font-size:11px;border-radius:6px}
+.btn-green{background:var(--green);color:#fff}
+.btn-green:hover{background:#0a6040}
+
+/* ── STATUS / CHIPS ─────────────────── */
+.chip{display:inline-flex;align-items:center;gap:5px;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.chip-inprog{background:var(--green-lt);color:var(--green)}.chip-inprog .dot{background:var(--green-dot)}
+.chip-planned{background:var(--blue-lt);color:#1a4fd6}.chip-planned .dot{background:var(--blue)}
+.chip-on{background:var(--green-lt);color:var(--green)}.chip-on .dot{background:var(--green-dot)}
+.chip-partial{background:var(--amber-lt);color:var(--amber)}.chip-partial .dot{background:var(--amber-dot)}
+.chip-no{background:var(--red-lt);color:var(--red)}.chip-no .dot{background:var(--red-dot)}
+.chip-high{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.chip-med{background:#f0f9ff;color:#0369a1;border:1px solid #bae6fd}
+.chip-low{background:var(--bg);color:var(--ink3);border:1px solid var(--border)}
+
+/* ── SCREEN 1: CHECK REQUEST ──────────── */
+.check-layout{display:grid;grid-template-columns:1fr 360px;gap:18px;align-items:start}
+.check-main{}
+.check-aside{}
+
+/* result card */
+.result-banner{padding:16px 20px;display:flex;align-items:center;gap:14px;border-radius:var(--r) var(--r) 0 0}
+.result-banner.r-on{background:var(--green-lt)}
+.result-banner.r-partial{background:var(--amber-lt)}
+.result-banner.r-no{background:var(--red-lt)}
+.result-icon{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:800;color:#fff;flex-shrink:0}
+.r-on .result-icon{background:var(--green)}
+.r-partial .result-icon{background:var(--amber-dot)}
+.r-no .result-icon{background:var(--red-dot)}
+.result-verdict{font-size:15px;font-weight:800;letter-spacing:-.01em}
+.r-on .result-verdict{color:var(--green)}
+.r-partial .result-verdict{color:var(--amber)}
+.r-no .result-verdict{color:var(--red)}
+.result-verdict-sub{font-size:12px;color:var(--ink2);margin-top:2px;line-height:1.4}
+.result-body{padding:16px 20px;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:13px;background:var(--white);border-radius:0 0 var(--r) var(--r)}
+.rl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink4);margin-bottom:6px}
+.match-tag{background:var(--blue-lt);border:1px solid var(--blue-border);border-radius:6px;padding:8px 12px;font-size:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.match-tag strong{color:var(--blue);font-weight:700}
+.tell-box{background:#f8f9fc;border-radius:8px;padding:12px 14px;border-left:3px solid var(--border2)}
+.tell-text{font-size:13px;color:var(--ink2);line-height:1.6}
+.result-footer{padding:12px 20px;background:#fafbfd;border-top:1px solid var(--border);border-radius:0 0 var(--r) var(--r);display:flex;gap:8px}
+
+/* aside: roadmap quick */
+.roadmap-quick-item{display:flex;align-items:center;gap:9px;padding:9px 13px;border-bottom:1px solid var(--border)}
+.roadmap-quick-item:last-child{border-bottom:none}
+.rq-name{flex:1;font-size:12px;font-weight:500}
+.rq-q{font-size:10px;color:var(--ink4);font-family:'JetBrains Mono',monospace;white-space:nowrap}
+
+/* ── SCREEN 2: IMPORT ROADMAP ─────────── */
+.import-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.import-source-card{border:1.5px solid var(--border);border-radius:var(--r);padding:18px;background:var(--white);cursor:pointer;transition:all .18s;position:relative}
+.import-source-card:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,96,244,.06)}
+.import-source-card.selected{border-color:var(--blue);background:var(--blue-lt);box-shadow:0 0 0 3px rgba(40,96,244,.08)}
+.import-source-card.selected .isc-check{display:flex}
+.isc-check{display:none;width:20px;height:20px;border-radius:50%;background:var(--blue);color:#fff;font-size:10px;align-items:center;justify-content:center;position:absolute;top:14px;right:14px}
+.isc-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:12px;font-size:20px}
+.isc-name{font-size:13px;font-weight:700;margin-bottom:3px}
+.isc-desc{font-size:11px;color:var(--ink3);line-height:1.5}
+.isc-tag{display:inline-block;font-size:10px;font-weight:600;padding:2px 7px;border-radius:3px;margin-top:8px}
+
+/* config panel */
+.config-panel{background:var(--white);border:1.5px solid var(--blue);border-radius:var(--r);padding:20px;margin-top:16px;box-shadow:0 0 0 3px rgba(40,96,244,.06)}
+.config-title{font-size:13px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+
+/* preview table */
+.preview-table{width:100%;border-collapse:collapse;margin-top:8px}
+.preview-table th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink4);padding:7px 12px;text-align:left;border-bottom:1px solid var(--border);background:#fafbfd}
+.preview-table td{padding:10px 12px;border-bottom:1px solid var(--border);font-size:12px;color:var(--ink)}
+.preview-table tr:last-child td{border-bottom:none}
+.preview-table tr:hover td{background:var(--bg)}
+
+/* ── SCREEN 3: IMPORT FEEDBACK ─────────── */
+/* reuses import styles above */
+.fb-source-card{border:1.5px solid var(--border);border-radius:var(--r);padding:16px 18px;background:var(--white);cursor:pointer;transition:all .18s;position:relative;display:flex;gap:13px;align-items:flex-start}
+.fb-source-card:hover{border-color:var(--blue);box-shadow:0 0 0 3px rgba(40,96,244,.06)}
+.fb-source-card.selected{border-color:var(--blue);background:var(--blue-lt)}
+.fsc-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
+.fsc-body{flex:1}
+.fsc-name{font-size:13px;font-weight:700;margin-bottom:2px}
+.fsc-desc{font-size:11px;color:var(--ink3);line-height:1.45}
+.fsc-check{display:none;width:18px;height:18px;border-radius:50%;background:var(--blue);color:#fff;font-size:9px;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+.fb-source-card.selected .fsc-check{display:flex}
+
+.fb-preview{background:#f8f9fc;border-radius:8px;border:1px solid var(--border);overflow:hidden;margin-top:8px}
+.fb-preview-item{padding:11px 14px;border-bottom:1px solid var(--border);font-size:12px;color:var(--ink2);line-height:1.5}
+.fb-preview-item:last-child{border-bottom:none}
+.fb-preview-item strong{color:var(--ink);font-weight:600}
+.fb-tag{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:3px;font-size:10px;font-weight:600;margin-left:6px}
+.fb-tag-pain{background:#fef2f2;color:var(--red);border:1px solid var(--red-border)}
+.fb-tag-req{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-border)}
+.fb-tag-praise{background:var(--green-lt);color:var(--green);border:1px solid var(--green-border)}
+
+/* ── SCREEN 4: RESULTS / DASHBOARD ──────── */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-c{background:var(--white);border:1px solid var(--border);border-radius:var(--r);padding:18px 18px 14px;position:relative;overflow:hidden;box-shadow:var(--sh)}
+.stat-c::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
+.stat-c.s-blue::before{background:var(--blue)}
+.stat-c.s-green::before{background:var(--green-dot)}
+.stat-c.s-amber::before{background:var(--amber-dot)}
+.stat-c.s-red::before{background:var(--red-dot)}
+.stat-n{font-size:40px;font-weight:800;line-height:1;margin-bottom:5px;letter-spacing:-.03em}
+.sn-blue{color:var(--blue)}.sn-green{color:var(--green)}.sn-amber{color:var(--amber-dot)}.sn-red{color:var(--red-dot)}
+.stat-l{font-size:12px;color:var(--ink3)}
+.stat-delta{font-size:10px;font-weight:600;padding:2px 6px;border-radius:4px;margin-top:6px;display:inline-block}
+.delta-up{background:var(--green-lt);color:var(--green)}
+.delta-new{background:var(--blue-lt);color:var(--blue)}
+
+.align-bar{height:12px;background:var(--border);border-radius:6px;overflow:hidden;display:flex;gap:2px;margin:14px 0 8px}
+.ab-seg{height:100%;border-radius:3px}
+
+.dash-table-wrap{background:var(--white);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden;margin-bottom:18px}
+.dash-table-head{padding:14px 18px;border-bottom:1px solid var(--border);background:#fafbfd;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.dash-table-title{font-size:13px;font-weight:700}
+.dtable{width:100%;border-collapse:collapse}
+.dtable th{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink4);padding:9px 16px;text-align:left;border-bottom:1px solid var(--border);white-space:nowrap;background:#fafbfd}
+.dtable td{padding:12px 16px;border-bottom:1px solid var(--border);font-size:12px;color:var(--ink);vertical-align:middle}
+.dtable tr:last-child td{border-bottom:none}
+.dtable tbody tr{transition:background .1s}
+.dtable tbody tr:hover td{background:var(--bg)}
+.td-company{font-weight:700;font-size:13px}
+.td-req{color:var(--ink2);font-style:italic;max-width:260px}
+.td-match-icon{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#fff;flex-shrink:0}
+.micon-on{background:var(--green)}.micon-partial{background:var(--amber-dot)}.micon-no{background:var(--red-dot)}
+.td-match-cell{display:flex;align-items:center;gap:8px}
+
+/* insight box */
+.insight-box{background:var(--ink);color:#f0ede8;border-radius:var(--r);padding:22px 24px;margin-bottom:18px;position:relative;overflow:hidden}
+.insight-box::after{content:'"';position:absolute;right:18px;bottom:-12px;font-size:100px;color:rgba(255,255,255,.06);line-height:1;pointer-events:none}
+.insight-ey{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.12em;text-transform:uppercase;color:#f59e0b;margin-bottom:10px}
+.insight-txt{font-size:14px;line-height:1.65;font-style:italic;color:#e8e5e0;max-width:680px;position:relative;z-index:1}
+
+/* ── SCREEN 5: REQUEST DETAIL ─────────── */
+.detail-layout{display:grid;grid-template-columns:1fr 300px;gap:18px;align-items:start}
+.timeline{display:flex;flex-direction:column;gap:0}
+.tl-item{display:flex;gap:13px;padding-bottom:18px;position:relative}
+.tl-item::before{content:'';position:absolute;left:10px;top:22px;bottom:0;width:1px;background:var(--border)}
+.tl-item:last-child::before{display:none}
+.tl-dot{width:22px;height:22px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;position:relative;z-index:1}
+.tld-blue{background:var(--blue)}.tld-green{background:var(--green)}.tld-amber{background:var(--amber-dot)}.tld-gray{background:var(--ink4)}
+.tl-body{flex:1;padding-top:1px}
+.tl-title{font-size:13px;font-weight:700;margin-bottom:2px}
+.tl-meta{font-size:11px;color:var(--ink4);font-family:'JetBrains Mono',monospace;margin-bottom:5px}
+.tl-content{font-size:12px;color:var(--ink2);line-height:1.55;background:#f8f9fc;border-radius:7px;padding:10px 13px;border-left:2px solid var(--border2)}
+
+/* ── UTILITIES ──────────────────────── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px}
+.flex{display:flex;align-items:center;gap:8px}
+.flex-between{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt12{margin-top:12px}.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.mb8{margin-bottom:8px}.mb12{margin-bottom:12px}.mb16{margin-bottom:16px}.mb20{margin-bottom:20px}
+.text-xs{font-size:11px}.text-sm{font-size:12px}.text-muted{color:var(--ink3)}
+.mono{font-family:'JetBrains Mono',monospace}
+.bold{font-weight:700}
+.section-title{font-size:12px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:10px}
+kbd{font-family:'JetBrains Mono',monospace;font-size:10px;background:#f3f4f6;border:1px solid var(--border2);border-radius:4px;padding:2px 6px;color:var(--ink2)}
+</style>
+</head>
+<body>
+
+<!-- META: SCREEN SWITCHER -->
+<div class="screen-picker">
+  <span class="screen-picker-label">Screens</span>
+  <div class="screen-pills">
+    <button class="spill active" onclick="showScreen('s1')">1 · Check Request</button>
+    <button class="spill" onclick="showScreen('s2')">2 · Import Roadmap</button>
+    <button class="spill" onclick="showScreen('s3')">3 · Import Feedback</button>
+    <button class="spill" onclick="showScreen('s4')">4 · Dashboard</button>
+    <button class="spill" onclick="showScreen('s5')">5 · Request Detail</button>
+  </div>
+  <span class="screen-note">Static prototype · No backend</span>
+</div>
+
+<div class="app-frame">
+
+  <!-- APP HEADER (shared across all screens) -->
+  <div class="app-header">
+    <div class="hdr-left">
+      <div class="hdr-logo">
+        <svg width="17" height="17" viewBox="0 0 17 17" fill="none">
+          <path d="M2 4.5h13M2 8.5h9M2 12.5h11" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <div class="hdr-name">ClearPath</div>
+        <div class="hdr-sub">Matrix One · Powered by Claude</div>
+      </div>
+    </div>
+    <nav class="hdr-nav">
+      <button class="hn" id="hn-check" onclick="showScreen('s1')">Check Request</button>
+      <button class="hn" id="hn-import" onclick="showScreen('s2')">Import Data</button>
+      <button class="hn" id="hn-dash" onclick="showScreen('s4')">Dashboard <span style="background:rgba(40,96,244,.15);color:var(--blue);border-radius:10px;padding:1px 6px;font-size:10px;margin-left:2px">12</span></button>
+    </nav>
+    <div class="hdr-avatar">SL</div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       SCREEN 1 — CHECK REQUEST
+  ════════════════════════════════════ -->
+  <div id="s1" class="screen active" style="margin-top:18px">
+    <div class="ptitle">Check a customer request</div>
+    <div class="psub">Describe what a prospect or customer is asking for. Claude checks it against your product roadmap instantly.</div>
+
+    <div class="check-layout">
+      <!-- MAIN FORM + RESULT -->
+      <div>
+        <!-- FORM -->
+        <div class="card mb16">
+          <div class="card-body">
+            <div class="form-grid">
+              <div class="fg"><label>Company</label><input class="fi" type="text" placeholder="e.g. Acme Corp" value="NordGroup Enterprise"></div>
+              <div class="fg"><label>Contact name</label><input class="fi" type="text" placeholder="e.g. Sarah Chen" value="James Eriksson"></div>
+            </div>
+            <div class="fg mb16"><label>Customer request <span style="color:var(--red-dot)">*</span></label>
+              <textarea class="fi fi-focus" rows="4" placeholder="Describe what the customer is asking for in plain language…">They need Single Sign-On support integrated with their company's Active Directory. Their IT team won't approve the tool without it — it's a hard blocker for the enterprise deal.</textarea>
+            </div>
+            <div class="flex-between" style="flex-wrap:wrap;gap:10px">
+              <span class="text-xs text-muted mono">Checking against 10 roadmap items</span>
+              <div class="flex" style="gap:8px">
+                <button class="btn btn-ghost btn-sm">Clear</button>
+                <button class="btn btn-blue btn-sm">
+                  <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M6.5 1v11M1 6.5h11" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  Check roadmap
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESULT CARD: ON ROADMAP -->
+        <div class="card mb16">
+          <div class="result-banner r-on">
+            <div class="result-icon">✓</div>
+            <div>
+              <div class="result-verdict">On the roadmap</div>
+              <div class="result-verdict-sub">SSO / SAML integration is confirmed for Q2 2026 and currently in progress.</div>
+            </div>
+          </div>
+          <div class="result-body">
+            <div>
+              <div class="rl">Matching roadmap item</div>
+              <div class="match-tag">
+                <strong>SSO / SAML integration</strong>
+                <span class="chip chip-inprog"><span class="dot"></span>In Progress</span>
+                <span class="text-xs text-muted mono">· Q2 2026</span>
+                <span class="chip chip-high" style="margin-left:auto">High priority</span>
+              </div>
+            </div>
+            <div>
+              <div class="rl">Expected delivery</div>
+              <div class="text-sm bold">Q2 2026</div>
+            </div>
+            <div class="tell-box">
+              <div class="rl mb8">What to tell the customer</div>
+              <div class="tell-text">"Great news — SSO with SAML is already on our roadmap and actively being built. You can expect it to be available in Q2 2026. We'll make sure to keep you updated as we get closer to release."</div>
+            </div>
+          </div>
+          <div class="result-footer">
+            <button class="btn btn-blue btn-sm">Save to dashboard</button>
+            <button class="btn btn-ghost btn-sm">New check</button>
+          </div>
+        </div>
+
+        <!-- ANOTHER RESULT EXAMPLE: PARTIAL -->
+        <div class="card" style="opacity:.55">
+          <div class="result-banner r-partial">
+            <div class="result-icon">◑</div>
+            <div>
+              <div class="result-verdict">Partially covered</div>
+              <div class="result-verdict-sub">Real-time collaboration is not directly planned, but the dashboard redesign in Q3 may address some of this.</div>
+            </div>
+          </div>
+          <div class="result-body">
+            <div class="tell-box">
+              <div class="rl mb8">What to tell the customer</div>
+              <div class="tell-text">"We don't have live co-editing on the roadmap right now, but our upcoming dashboard improvements in Q3 will make sharing and commenting easier. I'll flag this as a feature request with our product team."</div>
+            </div>
+          </div>
+          <div class="result-footer">
+            <button class="btn btn-blue btn-sm" disabled style="opacity:.5">Save to dashboard</button>
+            <span class="text-xs text-muted" style="font-style:italic">Previous result example</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASIDE: ROADMAP -->
+      <div>
+        <div class="card mb16">
+          <div class="card-head">
+            <div><div class="card-head-title">Product roadmap</div><div class="card-head-sub">10 items · Last synced 2h ago</div></div>
+            <button class="btn btn-ghost btn-xs">Refresh</button>
+          </div>
+          <div>
+            ${[
+              ["CSV / Excel export","In Progress","Q2 2026","inprog"],
+              ["SSO / SAML integration","In Progress","Q2 2026","inprog"],
+              ["Custom dashboards","Planned","Q2 2026","planned"],
+              ["Bulk user management","Planned","Q3 2026","planned"],
+              ["Mobile app redesign","Planned","Q3 2026","planned"],
+              ["Public API v2","Planned","Q3 2026","planned"],
+              ["Onboarding wizard","In Progress","Q2 2026","inprog"],
+              ["Slack integration","Planned","Q3 2026","planned"],
+              ["Audit logs","Planned","Q4 2026","planned"],
+              ["Dark mode","Planned","Q4 2026","planned"],
+            ].map(([name,status,q,cls]) => `
+              <div class="roadmap-quick-item">
+                <div class="rq-name">${name}</div>
+                <span class="chip chip-${cls}"><span class="dot"></span>${status}</span>
+                <span class="rq-q">${q}</span>
+              </div>`).join('')}
+          </div>
+          <div style="padding:11px 13px;border-top:1px solid var(--border);text-align:center">
+            <button class="btn btn-ghost btn-xs" onclick="showScreen('s2')">Update roadmap →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       SCREEN 2 — IMPORT ROADMAP
+  ════════════════════════════════════ -->
+  <div id="s2" class="screen" style="margin-top:18px">
+    <div class="ptitle">Import product roadmap</div>
+    <div class="psub">Choose where your roadmap lives. Claude will pull the items and use them when checking customer requests.</div>
+
+    <div class="import-grid mb20">
+      <!-- Jira -->
+      <div class="import-source-card selected" onclick="selectRMSource(this)">
+        <div class="isc-check">✓</div>
+        <div class="isc-icon" style="background:#e8f0fe">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M11.53 2.06L2.25 11.34a1.83 1.83 0 000 2.59l4.95 4.95 4.33-4.33-3.13-3.13 3.13-3.13 4.33-4.33-4.33-4.33a.51.51 0 00-.03.44z" fill="#2563eb"/><path d="M12.47 21.94L21.75 12.66a1.83 1.83 0 000-2.59l-4.95-4.95-4.33 4.33 3.13 3.13-3.13 3.13-4.33 4.33 4.33 4.33a.51.51 0 00.03-.44z" fill="#7ba7f7"/></svg>
+        </div>
+        <div class="isc-name">Jira</div>
+        <div class="isc-desc">Import sprint tickets and backlog items directly from your Jira project board.</div>
+        <span class="isc-tag" style="background:var(--blue-lt);color:var(--blue)">Most popular</span>
+      </div>
+      <!-- Notion -->
+      <div class="import-source-card" onclick="selectRMSource(this)">
+        <div class="isc-check">✓</div>
+        <div class="isc-icon" style="background:#f3f4f6">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#374151" stroke-width="1.5"/><path d="M8 8h8M8 12h5M8 16h6" stroke="#374151" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div class="isc-name">Notion</div>
+        <div class="isc-desc">Pull roadmap items from a Notion database, page, or planning template.</div>
+      </div>
+      <!-- Google Drive -->
+      <div class="import-source-card" onclick="selectRMSource(this)">
+        <div class="isc-check">✓</div>
+        <div class="isc-icon" style="background:#fef9ec">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M8 2l4 7-4 7H2l4-7L2 2h6z" fill="#4285f4"/><path d="M16 2l4 7-4 7h-8l4-7-4-7h8z" fill="#34a853"/><path d="M12 9l4 7H8l4-7z" fill="#fbbc04"/></svg>
+        </div>
+        <div class="isc-name">Google Drive</div>
+        <div class="isc-desc">Import from a Google Sheet, Doc, or shared roadmap file in Drive.</div>
+      </div>
+      <!-- Manual -->
+      <div class="import-source-card" onclick="selectRMSource(this)">
+        <div class="isc-check">✓</div>
+        <div class="isc-icon" style="background:#f0fdf4">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" stroke="#16a34a" stroke-width="1.5"/><path d="M12 8v8M8 12h8" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </div>
+        <div class="isc-name">Add manually</div>
+        <div class="isc-desc">Type or paste roadmap items directly. No integration needed.</div>
+        <span class="isc-tag" style="background:var(--green-lt);color:var(--green)">No setup</span>
+      </div>
+    </div>
+
+    <!-- CONFIG PANEL (shown for Jira) -->
+    <div class="config-panel">
+      <div class="config-title">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M11.53 2.06L2.25 11.34a1.83 1.83 0 000 2.59l4.95 4.95 4.33-4.33-3.13-3.13 3.13-3.13 4.33-4.33-4.33-4.33z" fill="#2563eb"/></svg>
+        Configure Jira import
+      </div>
+      <div class="grid2 mb16">
+        <div class="fg"><label>Jira project key</label><input class="fi" value="PROD" type="text"></div>
+        <div class="fg"><label>Issue types</label>
+          <select class="fi">
+            <option>Epic + Story + Task</option>
+            <option>Epic only</option>
+            <option>All types</option>
+          </select>
+        </div>
+        <div class="fg"><label>Filter by label (optional)</label><input class="fi" placeholder="e.g. roadmap, q2-2026" type="text"></div>
+        <div class="fg"><label>Max items to import</label>
+          <select class="fi"><option>50 items</option><option>100 items</option><option>All</option></select>
+        </div>
+      </div>
+      <div class="flex-between">
+        <span class="text-xs text-muted">Preview shows first 5 items</span>
+        <button class="btn btn-blue btn-sm">
+          <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          Preview import
+        </button>
+      </div>
+    </div>
+
+    <!-- PREVIEW TABLE -->
+    <div class="card mt16">
+      <div class="card-head">
+        <div><div class="card-head-title">Preview — 10 items found</div><div class="card-head-sub">From PROD project · Filtered: label:roadmap</div></div>
+        <div class="flex" style="gap:8px">
+          <button class="btn btn-ghost btn-sm">Back</button>
+          <button class="btn btn-blue btn-sm">Import all 10 items →</button>
+        </div>
+      </div>
+      <div style="overflow-x:auto">
+        <table class="preview-table">
+          <thead><tr><th>Item</th><th>Status</th><th>Quarter</th><th>Priority</th></tr></thead>
+          <tbody>
+            ${[
+              ["CSV / Excel export","In Progress","Q2 2026","High"],
+              ["SSO / SAML integration","In Progress","Q2 2026","High"],
+              ["Custom dashboards & analytics","Planned","Q2 2026","High"],
+              ["Bulk user management","Planned","Q3 2026","High"],
+              ["Mobile app redesign","Planned","Q3 2026","Medium"],
+            ].map(([n,s,q,p]) => `<tr>
+              <td class="bold">${n}</td>
+              <td><span class="chip ${s==='In Progress'?'chip-inprog':'chip-planned'}"><span class="dot"></span>${s}</span></td>
+              <td class="mono text-xs text-muted">${q}</td>
+              <td><span class="chip chip-${p==='High'?'high':p==='Medium'?'med':'low'}">${p}</span></td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+      <div style="padding:10px 16px;background:#fafbfd;border-top:1px solid var(--border);text-align:center">
+        <span class="text-xs text-muted">+ 5 more items · </span>
+        <span class="text-xs" style="color:var(--blue);cursor:pointer">Show all</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       SCREEN 3 — IMPORT FEEDBACK
+  ════════════════════════════════════ -->
+  <div id="s3" class="screen" style="margin-top:18px">
+    <div class="ptitle">Import customer feedback</div>
+    <div class="psub">Pull existing customer requests and feedback from your CS tools to bulk-check them against the roadmap.</div>
+
+    <div class="grid2 mb20">
+      <!-- HubSpot -->
+      <div class="fb-source-card selected" onclick="selectFBSource(this)">
+        <div class="fsc-icon" style="background:#fff3ee">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" fill="#f97316"/><circle cx="10" cy="10" r="7.5" stroke="#f97316" stroke-width="1.3"/><path d="M10 2.5v2M10 15.5v2M2.5 10h2M15.5 10h2" stroke="#f97316" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="fsc-body">
+          <div class="fsc-name">HubSpot</div>
+          <div class="fsc-desc">Import from support tickets, deal notes, and contact records.</div>
+        </div>
+        <div class="fsc-check">✓</div>
+      </div>
+      <!-- Slack -->
+      <div class="fb-source-card" onclick="selectFBSource(this)">
+        <div class="fsc-icon" style="background:#f0f9ff">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="7" width="3" height="3" rx="1" stroke="#0ea5e9" stroke-width="1.3"/><rect x="7" y="2" width="3" height="3" rx="1" stroke="#0ea5e9" stroke-width="1.3"/><rect x="15" y="7" width="3" height="3" rx="1" stroke="#0ea5e9" stroke-width="1.3"/><rect x="7" y="15" width="3" height="3" rx="1" stroke="#0ea5e9" stroke-width="1.3"/></svg>
+        </div>
+        <div class="fsc-body">
+          <div class="fsc-name">Slack</div>
+          <div class="fsc-desc">Search a channel for customer requests by keyword.</div>
+        </div>
+        <div class="fsc-check">✓</div>
+      </div>
+      <!-- Gmail -->
+      <div class="fb-source-card" onclick="selectFBSource(this)">
+        <div class="fsc-icon" style="background:#fef2f2">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="1.5" stroke="#ef4444" stroke-width="1.3"/><path d="M2 6l8 5 8-5" stroke="#ef4444" stroke-width="1.3"/></svg>
+        </div>
+        <div class="fsc-body">
+          <div class="fsc-name">Gmail</div>
+          <div class="fsc-desc">Search your inbox by label or query to pull feedback emails.</div>
+        </div>
+        <div class="fsc-check">✓</div>
+      </div>
+      <!-- Notion -->
+      <div class="fb-source-card" onclick="selectFBSource(this)">
+        <div class="fsc-icon" style="background:#f3f4f6">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="3" width="14" height="14" rx="2" stroke="#374151" stroke-width="1.3"/><path d="M7 7h6M7 10.5h4M7 14h5" stroke="#374151" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="fsc-body">
+          <div class="fsc-name">Notion</div>
+          <div class="fsc-desc">Pull from a feedback tracker or customer research database.</div>
+        </div>
+        <div class="fsc-check">✓</div>
+      </div>
+      <!-- Intercom -->
+      <div class="fb-source-card" onclick="selectFBSource(this)">
+        <div class="fsc-icon" style="background:#eef2ff">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="12" rx="2" stroke="#6366f1" stroke-width="1.3"/><path d="M6 7h8M6 10h5" stroke="#6366f1" stroke-width="1.3" stroke-linecap="round"/><path d="M14 15l2 2v-2" stroke="#6366f1" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div class="fsc-body">
+          <div class="fsc-name">Intercom</div>
+          <div class="fsc-desc">Import conversation threads tagged as feature requests.</div>
+        </div>
+        <div class="fsc-check">✓</div>
+      </div>
+      <!-- CSV -->
+      <div class="fb-source-card" onclick="selectFBSource(this)">
+        <div class="fsc-icon" style="background:#f0fdf4">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="3" y="2" width="14" height="16" rx="1.5" stroke="#16a34a" stroke-width="1.3"/><path d="M7 7h6M7 10h6M7 13h4" stroke="#16a34a" stroke-width="1.3" stroke-linecap="round"/></svg>
+        </div>
+        <div class="fsc-body">
+          <div class="fsc-name">CSV upload</div>
+          <div class="fsc-desc">Upload a spreadsheet with customer names and request descriptions.</div>
+        </div>
+        <div class="fsc-check">✓</div>
+      </div>
+    </div>
+
+    <!-- CONFIG (HubSpot selected) -->
+    <div class="config-panel mb16">
+      <div class="config-title">
+        <svg width="16" height="16" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="3" fill="#f97316"/><circle cx="10" cy="10" r="7.5" stroke="#f97316" stroke-width="1.3"/></svg>
+        Configure HubSpot import
+      </div>
+      <div class="grid3 mb16">
+        <div class="fg"><label>Record type</label>
+          <select class="fi"><option>Support tickets</option><option>Deal notes</option><option>Contact notes</option><option>NPS responses</option></select>
+        </div>
+        <div class="fg"><label>Keyword filter</label><input class="fi" placeholder="e.g. export, sso, mobile" type="text" value="feature request"></div>
+        <div class="fg"><label>Date range</label>
+          <select class="fi"><option>Last 30 days</option><option>Last 90 days</option><option>All time</option></select>
+        </div>
+      </div>
+      <button class="btn btn-blue btn-sm">Preview import →</button>
+    </div>
+
+    <!-- FEEDBACK PREVIEW -->
+    <div class="card">
+      <div class="card-head">
+        <div><div class="card-head-title">Preview — 8 requests found</div><div class="card-head-sub">HubSpot · Tickets · keyword: "feature request" · Last 30 days</div></div>
+        <button class="btn btn-blue btn-sm">Run bulk check on all 8 →</button>
+      </div>
+      <div class="fb-preview">
+        ${[
+          ["Acme Corp","Sarah Chen","Need CSV export to share data with finance team","req"],
+          ["BrightPath","Tom Wells","SSO is a hard requirement — IT won't approve without it","pain"],
+          ["LuxeRetail","Priya Nair","Love the product but onboarding took 2 days — too slow","pain"],
+          ["NordGroup","James Eriksson","Can we get a dedicated mobile app? Sales team uses phones","req"],
+          ["GrowthLabs","Ana Lima","Would love custom dashboards per team","req"],
+          ["Titan Health","Kevin Ross","We need audit logs for HIPAA compliance","req"],
+          ["BloomAgency","Mei Wang","Slack integration would save us so much manual work","req"],
+          ["ZenithCo","Lars Beck","Dark mode please — long sessions are hard on the eyes","praise"],
+        ].map(([co,contact,text,tag]) => `
+          <div class="fb-preview-item">
+            <strong>${co}</strong> · <span style="color:var(--ink4);font-size:11px">${contact}</span>
+            <span class="fb-tag fb-tag-${tag}">${tag==='req'?'Feature request':tag==='pain'?'Pain point':'Feedback'}</span>
+            <div style="margin-top:4px;font-style:italic;color:var(--ink2)">"${text}"</div>
+          </div>`).join('')}
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       SCREEN 4 — DASHBOARD
+  ════════════════════════════════════ -->
+  <div id="s4" class="screen" style="margin-top:18px">
+    <div class="flex-between mb20" style="flex-wrap:wrap;gap:14px">
+      <div>
+        <div class="ptitle" style="margin-bottom:4px">Request dashboard</div>
+        <div class="psub" style="margin-bottom:0">All customer requests checked against the product roadmap.</div>
+      </div>
+      <div class="flex" style="gap:8px">
+        <button class="btn btn-ghost btn-sm" onclick="showScreen('s3')">Import feedback</button>
+        <button class="btn btn-blue btn-sm" onclick="showScreen('s1')">+ New check</button>
+      </div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-c s-blue"><div class="stat-n sn-blue">12</div><div class="stat-l">Total requests</div><div class="stat-delta delta-new">+3 this week</div></div>
+      <div class="stat-c s-green"><div class="stat-n sn-green">7</div><div class="stat-l">On roadmap</div><div class="stat-delta delta-up">58%</div></div>
+      <div class="stat-c s-amber"><div class="stat-n sn-amber">3</div><div class="stat-l">Partially covered</div></div>
+      <div class="stat-c s-red"><div class="stat-n sn-red">2</div><div class="stat-l">Not on roadmap</div></div>
+    </div>
+
+    <!-- ALIGNMENT BAR -->
+    <div class="card mb18">
+      <div class="card-body" style="padding:16px 20px">
+        <div class="section-title" style="margin-bottom:8px">Alignment breakdown</div>
+        <div class="align-bar">
+          <div class="ab-seg" style="flex:7;background:#22c55e"></div>
+          <div class="ab-seg" style="flex:3;background:#f59e0b"></div>
+          <div class="ab-seg" style="flex:2;background:#ef4444"></div>
+        </div>
+        <div class="flex" style="gap:18px;flex-wrap:wrap">
+          ${[["#22c55e","On roadmap","58%"],["#f59e0b","Partially covered","25%"],["#ef4444","Not on roadmap","17%"]].map(([c,l,p]) =>
+            `<div class="flex text-xs text-muted"><div class="dot" style="background:${c};width:8px;height:8px;margin-right:4px"></div>${l}: <strong style="color:var(--ink);margin-left:3px">${p}</strong></div>`
+          ).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- INSIGHT -->
+    <div class="insight-box mb18">
+      <div class="insight-ey">Claude's insight</div>
+      <div class="insight-txt">58% of customer requests are already on the roadmap — strong signal that Q2 priorities are well-aligned. The two uncovered requests (real-time collaboration, AI summarisation) appear from 3+ enterprise accounts and may warrant a roadmap discussion before Q3 planning.</div>
+    </div>
+
+    <!-- TABLE -->
+    <div class="dash-table-wrap">
+      <div class="dash-table-head">
+        <div class="dash-table-title">Recent requests</div>
+        <div class="flex" style="gap:8px">
+          <select class="fi" style="padding:6px 10px;font-size:12px;border-radius:6px;border:1px solid var(--border)">
+            <option>All statuses</option><option>On roadmap</option><option>Partial</option><option>Not on roadmap</option>
+          </select>
+          <button class="btn btn-ghost btn-xs">Export CSV</button>
+        </div>
+      </div>
+      <table class="dtable">
+        <thead><tr><th></th><th>Company</th><th>Request</th><th>Alignment</th><th>Roadmap item</th><th>ETA</th><th>Saved</th></tr></thead>
+        <tbody>
+          ${[
+            ["on","NordGroup","Need SSO with Active Directory","On roadmap","SSO / SAML integration","Q2 2026","2m ago"],
+            ["on","Acme Corp","CSV export to share with finance","On roadmap","CSV / Excel export","Q2 2026","1h ago"],
+            ["on","GrowthLabs","Custom dashboards per team","On roadmap","Custom dashboards","Q2 2026","3h ago"],
+            ["partial","LuxeRetail","Faster onboarding experience","Partially covered","Onboarding wizard","Q2 2026","5h ago"],
+            ["on","Titan Health","Audit logs for HIPAA compliance","On roadmap","Audit logs","Q4 2026","1d ago"],
+            ["no","BloomAgency","Real-time doc collaboration","Not on roadmap","—","—","1d ago"],
+            ["partial","BrightPath","Better analytics & reporting","Partially covered","Custom dashboards","Q2 2026","2d ago"],
+            ["no","ZenithCo","AI-powered meeting summaries","Not on roadmap","—","—","2d ago"],
+          ].map(([m,co,req,label,item,eta,ts]) => {
+            const iconCls = m==='on'?'micon-on':m==='partial'?'micon-partial':'micon-no';
+            const icon = m==='on'?'✓':m==='partial'?'◑':'✕';
+            const chipCls = m==='on'?'chip-on':m==='partial'?'chip-partial':'chip-no';
+            return `<tr onclick="showScreen('s5')" style="cursor:pointer">
+              <td><div class="td-match-cell"><div class="td-match-icon ${iconCls}">${icon}</div></div></td>
+              <td class="td-company">${co}</td>
+              <td><div class="td-req">"${req}"</div></td>
+              <td><span class="chip ${chipCls}"><span class="dot"></span>${label}</span></td>
+              <td class="text-sm text-muted">${item}</td>
+              <td class="mono text-xs text-muted">${eta}</td>
+              <td class="mono text-xs text-muted">${ts}</td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════
+       SCREEN 5 — REQUEST DETAIL
+  ════════════════════════════════════ -->
+  <div id="s5" class="screen" style="margin-top:18px">
+    <div class="flex" style="gap:10px;margin-bottom:20px">
+      <button class="btn btn-ghost btn-sm" onclick="showScreen('s4')">← Back to dashboard</button>
+      <span class="text-muted text-xs" style="align-self:center">/ NordGroup · SSO request</span>
+    </div>
+
+    <div class="detail-layout">
+      <!-- MAIN -->
+      <div>
+        <!-- HEADER CARD -->
+        <div class="card mb16">
+          <div class="result-banner r-on" style="border-radius:var(--r) var(--r) 0 0">
+            <div class="result-icon">✓</div>
+            <div style="flex:1">
+              <div class="result-verdict">On the roadmap</div>
+              <div class="result-verdict-sub">SSO / SAML integration is confirmed for Q2 2026 and currently in progress.</div>
+            </div>
+            <div class="flex" style="gap:6px;flex-wrap:wrap">
+              <button class="btn btn-ghost btn-xs">Copy note</button>
+              <button class="btn btn-green btn-xs">Mark resolved</button>
+            </div>
+          </div>
+          <div style="padding:16px 20px;background:var(--white);border-radius:0 0 var(--r) var(--r)">
+            <div class="grid3">
+              <div><div class="section-title mb8">Company</div><div class="bold">NordGroup Enterprise</div><div class="text-xs text-muted mt4">james.eriksson@nordgroup.com</div></div>
+              <div><div class="section-title mb8">Contact</div><div class="bold">James Eriksson</div><div class="text-xs text-muted mt4">VP of Engineering</div></div>
+              <div><div class="section-title mb8">Checked</div><div class="bold mono text-sm">Today, 09:14</div><div class="text-xs text-muted mt4">by Sophie Laurent (CS)</div></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ORIGINAL REQUEST -->
+        <div class="card mb16">
+          <div class="card-head"><div class="card-head-title">Customer request</div></div>
+          <div class="card-body">
+            <div style="font-size:14px;font-style:italic;color:var(--ink2);line-height:1.65;background:#f8f9fc;border-radius:8px;padding:14px 16px;border-left:3px solid var(--blue)">
+              "They need Single Sign-On support integrated with their company's Active Directory. Their IT team won't approve the tool without it — it's a hard blocker for the enterprise deal worth €48k ARR."
+            </div>
+          </div>
+        </div>
+
+        <!-- CLAUDE ANALYSIS -->
+        <div class="card mb16">
+          <div class="card-head"><div class="card-head-title">Claude's analysis</div><span class="text-xs text-muted">AI generated</span></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:14px">
+            <div>
+              <div class="section-title mb8">Matching roadmap item</div>
+              <div class="match-tag">
+                <strong>SSO / SAML integration</strong>
+                <span class="chip chip-inprog"><span class="dot"></span>In Progress</span>
+                <span class="chip chip-high">High priority</span>
+                <span class="mono text-xs text-muted" style="margin-left:auto">Q2 2026</span>
+              </div>
+            </div>
+            <div class="tell-box">
+              <div class="section-title mb8">What to tell the customer</div>
+              <div class="tell-text">"Great news — SSO with SAML is already on our roadmap and actively being built. You can expect it to be available in Q2 2026. We'll make sure to keep you updated as we get closer to release, and we can flag your deal as a priority use case for the team."</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ACTIVITY -->
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Activity</div></div>
+          <div class="card-body">
+            <div class="timeline">
+              ${[
+                ["tld-blue","Saved to dashboard","Today 09:14","Sophie L. saved this request after checking against the roadmap."],
+                ["tld-green","Roadmap match found","Today 09:14","Claude identified SSO / SAML integration as a direct match with Q2 2026 delivery."],
+                ["tld-gray","Request submitted","Today 09:12","James Eriksson flagged SSO as a hard blocker during the enterprise trial call."],
+              ].map(([dot,title,meta,content]) => `
+                <div class="tl-item">
+                  <div class="tl-dot ${dot}">•</div>
+                  <div class="tl-body">
+                    <div class="tl-title">${title}</div>
+                    <div class="tl-meta">${meta}</div>
+                    <div class="tl-content">${content}</div>
+                  </div>
+                </div>`).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ASIDE -->
+      <div>
+        <div class="card mb16">
+          <div class="card-head"><div class="card-head-title">Deal context</div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+            ${[["ARR value","€48,000"],["Stage","Negotiation"],["Close date","June 30, 2026"],["Owner","Sophie Laurent"],["Blocker","SSO / IT approval"]].map(([l,v]) =>
+              `<div class="flex-between"><span class="text-xs text-muted">${l}</span><span class="text-sm bold">${v}</span></div>`
+            ).join('<div style="height:1px;background:var(--border)"></div>')}
+          </div>
+        </div>
+        <div class="card mb16">
+          <div class="card-head"><div class="card-head-title">Similar requests</div></div>
+          <div style="padding:12px 0">
+            ${[["BrightPath","SSO is a hard requirement"],["TechCore","Need SAML for enterprise rollout"],["Sentinel","Active Directory integration"]].map(([co,req]) =>
+              `<div style="padding:9px 14px;border-bottom:1px solid var(--border);cursor:pointer" onclick="showScreen('s5')">
+                <div class="text-sm bold">${co}</div>
+                <div class="text-xs text-muted">"${req}"</div>
+              </div>`).join('')}
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-head"><div class="card-head-title">Quick actions</div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:8px">
+            <button class="btn btn-ghost" style="justify-content:flex-start;width:100%">📋 Copy customer note</button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;width:100%">🔗 Share with product team</button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;width:100%">📧 Send update to customer</button>
+            <button class="btn btn-green" style="justify-content:flex-start;width:100%">✓ Mark as resolved</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /app-frame -->
+
+<script>
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.spill').forEach((p,i) => {
+    p.classList.toggle('active', p.getAttribute('onclick').includes(id));
+  });
+  // sync header nav
+  document.getElementById('hn-check').classList.toggle('active', id==='s1');
+  document.getElementById('hn-import').classList.toggle('active', id==='s2'||id==='s3');
+  document.getElementById('hn-dash').classList.toggle('active', id==='s4'||id==='s5');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function selectRMSource(el) {
+  document.querySelectorAll('.import-source-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectFBSource(el) {
+  document.querySelectorAll('.fb-source-card').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+</script>
+</body>
+</html>

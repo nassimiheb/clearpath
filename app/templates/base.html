@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>{% block title %}ClearPath{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  <script src="https://unpkg.com/htmx.org@2.0.4"></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/checks/new"><span class="logo">≋</span><span>ClearPath<small>Customer-to-roadmap alignment</small></span></a>
+    <nav>
+      <a class="{{ 'active' if request.url.path.startswith('/checks') else '' }}" href="/checks/new">Check request</a>
+      <a class="{{ 'active' if request.url.path.startswith('/roadmap') else '' }}" href="/roadmap">Roadmap</a>
+      <a class="{{ 'active' if request.url.path.startswith('/feedback') else '' }}" href="/feedback/import">Import feedback</a>
+      <a class="{{ 'active' if request.url.path == '/dashboard' else '' }}" href="/dashboard">Dashboard</a>
+    </nav>
+  </header>
+  <main>{% block content %}{% endblock %}</main>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <div class="loading-overlay" id="loading-overlay" role="status" aria-live="polite" aria-hidden="true">
+    <div class="loading-panel">
+      <div class="loader-orbit"><span></span><span></span><span></span></div>
+      <h2 id="loading-title">Claude is checking the roadmap</h2>
+      <p id="loading-message">Understanding the request and finding the strongest match...</p>
+      <div class="loading-steps"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+  <script>
+    document.querySelectorAll("form[data-loading-title]").forEach((form) => {
+      form.addEventListener("submit", () => {
+        if (!form.checkValidity()) return;
+        const overlay = document.getElementById("loading-overlay");
+        document.getElementById("loading-title").textContent = form.dataset.loadingTitle;
+        document.getElementById("loading-message").textContent = form.dataset.loadingMessage;
+        overlay.classList.add("visible");
+        overlay.setAttribute("aria-hidden", "false");
+        form.querySelectorAll('button[type="submit"], button:not([type])').forEach((button) => {
+          button.disabled = true;
+        });
+      });
+    });
+    document.querySelectorAll(".copy-action").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const source = document.getElementById(button.dataset.copyTarget);
+        await navigator.clipboard.writeText(source.value);
+        const toast = document.getElementById("toast");
+        toast.textContent = button.dataset.trackUrl ? "Copied and recorded as shared with product." : "Customer response copied.";
+        toast.classList.add("visible");
+        setTimeout(() => toast.classList.remove("visible"), 2800);
+        if (button.dataset.trackUrl) {
+          await fetch(button.dataset.trackUrl, {method: "POST", redirect: "follow"});
+          window.location.reload();
+        }
+      });
+    });
+  </script>
+</body>
+</html>

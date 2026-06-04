@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Import feedback · ClearPath{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Import customer feedback</h1><p>Upload customer requests and run a bulk Claude roadmap check.</p></div>
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+{% if imported %}<div class="alert success">Imported and checked {{ imported|length }} request{{ "s" if imported|length != 1 else "" }}. <a href="/dashboard">View opportunities</a></div>{% endif %}
+{% if failures %}<div class="alert error"><strong>{{ failures|length }} request{{ "s" if failures|length != 1 else "" }} failed:</strong><ul>{% for failure in failures %}<li>{{ failure }}</li>{% endfor %}</ul></div>{% endif %}
+<div class="two-col import-layout">
+  <section class="card content-card">
+    <h3>Upload CSV</h3>
+    <form method="post" action="/feedback/import" enctype="multipart/form-data" class="upload-form">
+      <label class="upload-zone">Choose customer feedback CSV<input type="file" name="csv_file" accept=".csv,text/csv" required><span>Maximum 25 requests per import</span></label>
+      <button type="submit">Import and run checks</button>
+    </form>
+  </section>
+  <aside class="card content-card"><h3>Required format</h3><p>Only <code>request</code> is required. Deal fields make the opportunity radar more useful.</p><div class="csv-example"><code>company,contact,request,deal_value,deal_stage,deal_blocker<br>Acme,Sarah,Need SSO,48000,Negotiation,true<br>GrowthLabs,Ana,Custom team dashboards,25000,Evaluation,false</code></div><p class="muted">deal_value is treated as euros. deal_blocker accepts true, yes, 1, or y.</p><a class="button secondary small" href="/static/sample_feedback.csv" download>Download sample CSV</a></aside>
+</div>
+{% if imported %}<section class="card table-card"><table><thead><tr><th>Company</th><th>Theme</th><th>Alignment</th><th>Deal value</th></tr></thead><tbody>{% for check in imported %}<tr class="clickable" onclick="location.href='/checks/{{ check.id }}'"><td>{{ check.company or "—" }}</td><td>{{ check.request_theme }}</td><td><span class="pill {{ check.alignment.value }}">{{ alignment_label(check.alignment) }}</span></td><td>{{ format_deal_value(check.deal_value) }}</td></tr>{% endfor %}</tbody></table></section>{% endif %}
+{% endblock %}

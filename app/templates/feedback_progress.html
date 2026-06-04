@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}Import progress · ClearPath{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Checking imported feedback</h1><p>Claude is comparing each request against the active roadmap.</p></div>
+<section class="card import-progress-card" data-job-id="{{ job.id }}">
+  <div class="progress-heading"><div><span class="progress-status" id="progress-status">Processing requests</span><h2><span id="progress-processed">{{ job.processed }}</span> of <span id="progress-total">{{ job.total }}</span> checked</h2><p id="progress-current">{{ job.current_company or "Preparing import..." }}</p></div><strong id="progress-percent">{{ job.percent }}%</strong></div>
+  <div class="progress-track"><div id="progress-bar" style="width:{{ job.percent }}%"></div></div>
+  <div class="progress-counts"><span><strong id="progress-success">{{ job.succeeded }}</strong> successful</span><span><strong id="progress-failed">{{ job.failed }}</strong> failed</span></div>
+  <div id="progress-complete" class="progress-complete" hidden><h3>Import complete</h3><p id="progress-summary"></p><div class="header-actions"><a class="button" href="/dashboard">View opportunity radar</a><a class="button secondary" href="/feedback/import">Import another CSV</a></div></div>
+  <div id="progress-errors" class="progress-errors" hidden><h3>Failed requests</h3><ul id="progress-error-list"></ul></div>
+</section>
+<script>
+  const progressCard = document.querySelector(".import-progress-card");
+  const jobId = progressCard.dataset.jobId;
+  async function updateImportProgress() {
+    const response = await fetch(`/feedback/import/${jobId}/status`);
+    const job = await response.json();
+    document.getElementById("progress-processed").textContent = job.processed;
+    document.getElementById("progress-total").textContent = job.total;
+    document.getElementById("progress-percent").textContent = `${job.percent}%`;
+    document.getElementById("progress-bar").style.width = `${job.percent}%`;
+    document.getElementById("progress-success").textContent = job.succeeded;
+    document.getElementById("progress-failed").textContent = job.failed;
+    document.getElementById("progress-current").textContent = job.current_company ? `Checking ${job.current_company}...` : "Finalizing results...";
+    if (job.status === "completed") {
+      document.getElementById("progress-status").textContent = "Completed";
+      document.getElementById("progress-current").textContent = "All requests have been processed.";
+      document.getElementById("progress-complete").hidden = false;
+      document.getElementById("progress-summary").textContent = `${job.succeeded} requests imported successfully and ${job.failed} failed.`;
+      if (job.failures.length) {
+        document.getElementById("progress-errors").hidden = false;
+        const errorList = document.getElementById("progress-error-list");
+        errorList.replaceChildren(...job.failures.map((failure) => {
+          const item = document.createElement("li");
+          item.textContent = failure;
+          return item;
+        }));
+      }
+      return;
+    }
+    setTimeout(updateImportProgress, 700);
+  }
+  updateImportProgress();
+</script>
+{% endblock %}

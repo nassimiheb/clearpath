@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Edit roadmap · ClearPath{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Edit roadmap item</h1><p>Update this manually managed item.</p></div>
+<section class="card content-card narrow"><form method="post" action="/roadmap/{{ item.id }}/edit">
+<label>Name<input name="name" value="{{ item.name }}" required></label><label>Description<textarea name="description" rows="4">{{ item.description }}</textarea></label>
+<div class="form-grid"><label>Status<input name="status" value="{{ item.status }}"></label><label>Quarter<input name="quarter" value="{{ item.quarter }}"></label><label>Priority<select name="priority">{% for p in ["High","Medium","Low"] %}<option {{ "selected" if item.priority == p else "" }}>{{ p }}</option>{% endfor %}</select></label></div>
+<div class="actions"><a class="button secondary" href="/roadmap">Cancel</a><button>Save changes</button></div></form></section>
+{% endblock %}

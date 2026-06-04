@@ -1,0 +1,4 @@
+company,contact,request,deal_value,deal_stage,deal_blocker
+Acme Corp,Sarah Chen,Need enterprise SSO with Active Directory,48000,Negotiation,true
+GrowthLabs,Ana Lima,Would love custom dashboards for each team,25000,Evaluation,false
+TechCore,Lee Morgan,SAML login is required for our enterprise rollout,62000,Evaluation,true

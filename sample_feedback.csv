@@ -1,0 +1,13 @@
+company,contact,request,deal_value,deal_stage,deal_blocker
+Acme Corp,Sarah Chen,Need enterprise SSO with Active Directory before security approval,48000,Negotiation,true
+TechCore,Lee Morgan,SAML login is required for our enterprise rollout,62000,Evaluation,true
+BrightPath,Tom Wells,Our IT team requires single sign-on for all employees,35000,Evaluation,true
+GrowthLabs,Ana Lima,Would love custom dashboards for each department,25000,Evaluation,false
+Northstar Media,Maya Patel,Can every team create its own analytics dashboard,18000,Discovery,false
+LuxeRetail,Priya Nair,We need reports customized for regional managers,41000,Negotiation,false
+Titan Health,Kevin Ross,Audit logs are required for our compliance review,90000,Negotiation,true
+Sentinel Finance,Emma Dubois,We need a full history of admin and user actions,75000,Evaluation,true
+BloomAgency,Mei Wang,A Slack integration would remove a lot of manual work,12000,Discovery,false
+ZenithCo,Lars Beck,Please add automatic AI meeting summaries,55000,Evaluation,false
+Orbit Systems,Daniel Kim,We need AI-generated summaries after customer calls,68000,Negotiation,true
+NordGroup,James Eriksson,The sales team needs a native mobile application,48000,Evaluation,false

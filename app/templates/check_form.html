@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}Check request · ClearPath{% endblock %}
+{% block content %}
+<div class="page-head"><h1>Check a customer request</h1><p>Describe what the customer needs. Claude checks it against your active roadmap.</p></div>
+{% if error %}<div class="alert error">{{ error }}</div>{% endif %}
+<div class="two-col">
+  <section class="card">
+    <form method="post" action="/checks" data-loading-title="Claude is checking the roadmap" data-loading-message="Understanding the request, comparing roadmap items, and preparing a customer-ready answer...">
+      <div class="form-grid">
+        <label>Company<input name="company" value="{{ company or '' }}" placeholder="Acme Corp"></label>
+        <label>Contact<input name="contact" value="{{ contact or '' }}" placeholder="Sarah Chen"></label>
+      </div>
+      <label>Customer request<textarea name="request_text" rows="7" required placeholder="Describe the request in plain English...">{{ request_text or '' }}</textarea></label>
+      <details class="deal-context" {{ "open" if deal_value or deal_stage or deal_blocker else "" }}>
+        <summary>Add deal context <span>Optional, but useful for prioritization</span></summary>
+        <div class="form-grid deal-fields">
+          <label>Deal value (€)<input name="deal_value" type="number" min="0" value="{{ deal_value or 0 }}"></label>
+          <label>Deal stage<select name="deal_stage"><option value="">Not specified</option>{% for stage in ["Discovery","Evaluation","Negotiation","Renewal"] %}<option {{ "selected" if deal_stage == stage else "" }}>{{ stage }}</option>{% endfor %}</select></label>
+        </div>
+        <label class="checkbox-label"><input type="checkbox" name="deal_blocker" value="true" {{ "checked" if deal_blocker else "" }}> This request is blocking the deal</label>
+      </details>
+      <div class="actions"><span class="muted">Checking against {{ items|length }} active roadmap items</span><button type="submit">Check roadmap</button></div>
+    </form>
+  </section>
+  <aside class="card">
+    <div class="card-head"><div><strong>Active roadmap</strong><small>{{ items|length }} items</small></div><a class="button secondary small" href="/roadmap">Manage</a></div>
+    <div class="list">
+      {% for item in items[:8] %}
+      <div class="roadmap-preview-item">
+        <strong>{{ item.name }}</strong>
+        <div class="roadmap-preview-meta">
+          <span class="pill status-pill">{{ item.status or "No status" }}</span>
+          <span class="meta-pill quarter-pill">{{ item.quarter or "No ETA" }}</span>
+          <span class="meta-pill priority-pill">{{ item.priority or "No priority" }}</span>
+        </div>
+      </div>
+      {% else %}<div class="empty">No roadmap items yet.</div>{% endfor %}
+    </div>
+  </aside>
+</div>
+{% endblock %}
