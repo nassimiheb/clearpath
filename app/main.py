@@ -16,6 +16,7 @@ from app.migrations import migrate_database
 from app.models import Alignment, CustomerCheck, DashboardInsight, RoadmapItem, utcnow
 from app.services.claude import ClaudeMatcher, ClaudeServiceError
 from app.services.demo_matcher import DemoMatcher
+from app.services.demo_seed import seed_demo_data
 from app.services.imports import FeedbackImportError, parse_feedback_csv
 from app.services.import_jobs import ImportJob, ImportJobManager
 from app.services.notion import NotionService, NotionSyncError
@@ -44,6 +45,9 @@ templates.env.globals["format_deal_value"] = lambda value: f"€{value:,.0f}" if
 async def lifespan(_: FastAPI):
     Base.metadata.create_all(engine)
     migrate_database(engine)
+    if get_settings().seed_demo_data:
+        with SessionLocal() as db:
+            seed_demo_data(db)
     yield
 
 

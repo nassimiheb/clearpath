@@ -8,6 +8,7 @@ from app.models import Alignment, CustomerCheck, RoadmapItem
 from app.schemas import ClaudeDashboardInsight, ClaudeMatch
 from app.services.claude import ClaudeMatcher
 from app.services.demo_matcher import DemoMatcher
+from app.services.demo_seed import seed_demo_data
 from app.services.imports import FeedbackImportError, parse_feedback_csv
 from app.services.notion import NotionService, NotionSyncError
 
@@ -140,6 +141,24 @@ def test_demo_matcher_generates_dashboard_insight_without_api():
     )
     assert "Enterprise SSO" in insight.headline
     assert "€48,000" in insight.headline
+
+
+def test_demo_seed_populates_dynamic_data_and_is_idempotent(db):
+    seed_demo_data(db)
+    roadmap_count = db.query(RoadmapItem).count()
+    check_count = db.query(CustomerCheck).count()
+    insight_count = db.execute(text("select count(*) from dashboard_insights")).scalar_one()
+    assert roadmap_count == 7
+    assert check_count == 11
+    assert insight_count == 1
+    assert db.query(CustomerCheck).filter(CustomerCheck.deal_blocker.is_(True)).count() >= 1
+    assert db.query(CustomerCheck).filter(CustomerCheck.resolved.is_(True)).count() == 1
+    assert db.query(CustomerCheck).filter(CustomerCheck.request_theme == "AI summaries").count() == 2
+
+    seed_demo_data(db)
+    assert db.query(RoadmapItem).count() == roadmap_count
+    assert db.query(CustomerCheck).count() == check_count
+    assert db.execute(text("select count(*) from dashboard_insights")).scalar_one() == insight_count
 
 
 def test_notion_schema_validation():

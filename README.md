@@ -22,11 +22,14 @@ Use demo mode when deploying to Render without an Anthropic API key:
 
 ```env
 MATCHING_PROVIDER=demo
+SEED_DEMO_DATA=true
 ANTHROPIC_API_KEY=
 DATABASE_URL=sqlite:////tmp/clearpath.db
 ```
 
 Demo mode performs deterministic local roadmap matching, request-theme grouping, customer-note generation, and dashboard insights. It makes no Anthropic network calls and displays a visible **Safe demo mode** banner. Notion credentials are also optional; add roadmap items manually if you do not want to store a Notion token on Render.
+
+`SEED_DEMO_DATA=true` makes an empty deployment immediately presentation-ready with sample roadmap items, varied checked requests, deal blockers, activity states, opportunity groups, and a strategic insight. Seeding is idempotent and never duplicates or overwrites existing content.
 
 ## Notion roadmap schema
 

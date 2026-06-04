@@ -7,6 +7,7 @@ class Settings(BaseSettings):
     app_name: str = "ClearPath"
     database_url: str = "sqlite:///./data/clearpath.db"
     matching_provider: str = "claude"
+    seed_demo_data: bool = False
     anthropic_api_key: str = ""
     anthropic_model: str = "claude-sonnet-4-6"
     notion_token: str = ""
