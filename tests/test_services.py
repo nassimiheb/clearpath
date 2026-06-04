@@ -229,6 +229,29 @@ def test_notion_deactivates_missing_rows_but_not_manual(db):
     assert manual.active is True
 
 
+def test_notion_sync_skips_and_removes_nameless_notion_rows(db):
+    blank = RoadmapItem(name="", source="notion", notion_page_id="old-blank")
+    db.add(blank)
+    db.commit()
+    check = CustomerCheck(
+        request_text="Unknown request",
+        alignment=Alignment.partial,
+        matched_roadmap_item_id=blank.id,
+        confidence=50,
+        reasoning="Old match",
+        customer_note="Reviewing",
+    )
+    db.add(check)
+    db.commit()
+    service = NotionService("token", "source")
+    service.fetch_pages = lambda: [notion_page(page_id="new-blank", name="   ")]
+
+    assert service.sync(db) == 0
+    db.refresh(check)
+    assert db.query(RoadmapItem).count() == 0
+    assert check.matched_roadmap_item_id is None
+
+
 def test_notion_sync_reuses_demo_item_with_same_normalized_name(db):
     demo = RoadmapItem(name="SSO / SAML integration", source="demo", quarter="Q1 2027")
     db.add(demo)

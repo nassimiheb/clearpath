@@ -76,7 +76,27 @@ class NotionService:
         return pages
 
     def sync(self, db: Session) -> int:
-        parsed = [self.parse_page(page) for page in self.fetch_pages()]
+        parsed = []
+        for page in self.fetch_pages():
+            data = self.parse_page(page)
+            data["name"] = data["name"].strip()
+            if data["name"]:
+                parsed.append(data)
+
+        nameless_items = [
+            item
+            for item in db.scalars(select(RoadmapItem).where(RoadmapItem.source == "notion"))
+            if not item.name.strip()
+        ]
+        for item in nameless_items:
+            db.execute(
+                update(CustomerCheck)
+                .where(CustomerCheck.matched_roadmap_item_id == item.id)
+                .values(matched_roadmap_item_id=None)
+            )
+            db.delete(item)
+        db.flush()
+
         seen = {item["notion_page_id"] for item in parsed}
         all_items = list(db.scalars(select(RoadmapItem).order_by(RoadmapItem.id)))
         by_page_id = {

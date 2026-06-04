@@ -10,8 +10,8 @@
     <div class="actions"><span></span><button>Add item</button></div>
   </form>
 </section>
-<section class="card table-card"><table><thead><tr><th>Item</th><th>Source</th><th>Status</th><th>Quarter</th><th>Priority</th><th></th></tr></thead><tbody>
-{% for item in items %}<tr class="{{ 'inactive' if not item.active else '' }}"><td><strong>{{ item.name }}</strong><small>{{ item.description }}</small></td><td><span class="pill">{{ item.source }}</span></td><td>{{ item.status }}</td><td>{{ item.quarter or "—" }}</td><td>{{ item.priority }}</td><td class="row-actions">{% if item.source == "manual" %}<a href="/roadmap/{{ item.id }}/edit">Edit</a><form method="post" action="/roadmap/{{ item.id }}/delete"><button class="link danger">Delete</button></form>{% else %}<span class="muted">{{ "Active" if item.active else "Inactive" }}</span>{% endif %}</td></tr>
-{% else %}<tr><td colspan="6" class="empty">Add your first roadmap item or sync Notion.</td></tr>{% endfor %}
+<section class="card table-card"><table><thead><tr><th>Item</th><th>Source</th><th>Status</th><th>Quarter</th><th>Priority</th><th>State</th><th>Actions</th></tr></thead><tbody>
+{% for item in items %}<tr class="{{ 'inactive' if not item.active else '' }}"><td><strong>{{ item.name }}</strong><small>{{ item.description }}</small></td><td><span class="pill">{{ item.source }}</span></td><td>{{ item.status }}</td><td>{{ item.quarter or "—" }}</td><td>{{ item.priority }}</td><td class="state-cell"><span class="state-badge {{ 'active' if item.active else 'inactive' }}">{{ "Active" if item.active else "Inactive" }}</span></td><td class="row-actions">{% if item.source == "manual" %}<a href="/roadmap/{{ item.id }}/edit">Edit</a><form method="post" action="/roadmap/{{ item.id }}/delete"><button class="link danger">Delete</button></form>{% else %}<span class="muted">—</span>{% endif %}</td></tr>
+{% else %}<tr><td colspan="7" class="empty">Add your first roadmap item or sync Notion.</td></tr>{% endfor %}
 </tbody></table></section>
 {% endblock %}
