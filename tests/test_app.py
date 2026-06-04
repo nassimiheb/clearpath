@@ -87,7 +87,7 @@ def test_successful_check_is_saved_and_visible(client, db):
     assert saved.deal_value == 48000
     dashboard = client.get("/dashboard").text
     assert "NordGroup" in dashboard
-    assert "Opportunity radar" in dashboard
+    assert "Top priorities" in dashboard
     assert "€48,000" in dashboard
 
 
