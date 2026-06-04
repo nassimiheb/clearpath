@@ -200,3 +200,57 @@ def test_notion_deactivates_missing_rows_but_not_manual(db):
     db.refresh(manual)
     assert notion.active is False
     assert manual.active is True
+
+
+def test_notion_sync_reuses_demo_item_with_same_normalized_name(db):
+    demo = RoadmapItem(name="SSO / SAML integration", source="demo", quarter="Q1 2027")
+    db.add(demo)
+    db.commit()
+    service = NotionService("token", "source")
+    service.fetch_pages = lambda: [notion_page(name="SSO SAML Integration")]
+
+    assert service.sync(db) == 1
+    items = db.query(RoadmapItem).all()
+    assert len(items) == 1
+    assert items[0].id == demo.id
+    assert items[0].source == "notion"
+    assert items[0].notion_page_id == "page-1"
+    assert items[0].quarter == "Q2 2026"
+
+
+def test_notion_sync_merges_existing_duplicates_and_preserves_check_match(db):
+    demo = RoadmapItem(name="Audit logs", source="demo")
+    notion = RoadmapItem(name="AUDIT LOGS", source="notion", notion_page_id="old-page")
+    db.add_all([demo, notion])
+    db.commit()
+    check = CustomerCheck(
+        request_text="Need audit logs",
+        alignment=Alignment.on_roadmap,
+        matched_roadmap_item_id=demo.id,
+        confidence=90,
+        reasoning="Matched",
+        customer_note="Planned",
+    )
+    db.add(check)
+    db.commit()
+    service = NotionService("token", "source")
+    service.fetch_pages = lambda: [notion_page(page_id="old-page", name="Audit logs")]
+
+    service.sync(db)
+    db.refresh(check)
+    items = db.query(RoadmapItem).all()
+    assert len(items) == 1
+    assert items[0].id == notion.id
+    assert check.matched_roadmap_item_id == notion.id
+
+
+def test_notion_sync_does_not_duplicate_seeded_demo_roadmap(db):
+    seed_demo_data(db)
+    assert db.query(RoadmapItem).count() == 7
+    service = NotionService("token", "source")
+    service.fetch_pages = lambda: [notion_page(name="SSO SAML Integration")]
+
+    service.sync(db)
+    assert db.query(RoadmapItem).count() == 7
+    synced = db.query(RoadmapItem).filter(RoadmapItem.notion_page_id == "page-1").one()
+    assert synced.source == "notion"

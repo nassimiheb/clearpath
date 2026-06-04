@@ -1,8 +1,9 @@
 import httpx
+import re
 from sqlalchemy import select, update
 from sqlalchemy.orm import Session
 
-from app.models import RoadmapItem
+from app.models import CustomerCheck, RoadmapItem
 
 
 class NotionSyncError(RuntimeError):
@@ -17,6 +18,10 @@ class NotionService:
         self.token = token
         self.data_source_id = data_source_id
         self.client = client
+
+    @staticmethod
+    def normalize_name(name: str) -> str:
+        return " ".join(re.findall(r"[a-z0-9]+", name.lower()))
 
     @staticmethod
     def _plain_text(values: list[dict]) -> str:
@@ -73,18 +78,41 @@ class NotionService:
     def sync(self, db: Session) -> int:
         parsed = [self.parse_page(page) for page in self.fetch_pages()]
         seen = {item["notion_page_id"] for item in parsed}
-        existing = {
+        all_items = list(db.scalars(select(RoadmapItem).order_by(RoadmapItem.id)))
+        by_page_id = {
             item.notion_page_id: item
-            for item in db.scalars(select(RoadmapItem).where(RoadmapItem.source == "notion"))
+            for item in all_items
+            if item.notion_page_id
         }
+        by_name: dict[str, list[RoadmapItem]] = {}
+        for item in all_items:
+            by_name.setdefault(self.normalize_name(item.name), []).append(item)
+
         for data in parsed:
-            item = existing.get(data["notion_page_id"])
-            if item:
+            page_item = by_page_id.get(data["notion_page_id"])
+            name_matches = by_name.get(self.normalize_name(data["name"]), [])
+            item = page_item or (name_matches[0] if name_matches else None)
+            if not item:
+                item = RoadmapItem(**data, source="notion", active=True)
+                db.add(item)
+                db.flush()
+            else:
                 for key, value in data.items():
                     setattr(item, key, value)
+                item.source = "notion"
                 item.active = True
-            else:
-                db.add(RoadmapItem(**data, source="notion", active=True))
+
+            duplicates = [match for match in name_matches if match.id != item.id]
+            if page_item and page_item.id != item.id:
+                duplicates.append(page_item)
+            for duplicate in {duplicate.id: duplicate for duplicate in duplicates}.values():
+                db.execute(
+                    update(CustomerCheck)
+                    .where(CustomerCheck.matched_roadmap_item_id == duplicate.id)
+                    .values(matched_roadmap_item_id=item.id)
+                )
+                db.delete(duplicate)
+
         if seen:
             db.execute(
                 update(RoadmapItem)

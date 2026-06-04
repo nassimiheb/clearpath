@@ -43,7 +43,9 @@ Share the data source with your Notion integration and create these exact proper
 | Quarter | Select |
 | Priority | Select |
 
-Use the data source ID, not a page URL, for `NOTION_DATA_SOURCE_ID`. Syncs upsert Notion rows and mark removed Notion rows inactive. Manual roadmap items are never changed by a Notion sync.
+Use the data source ID, not a page URL, for `NOTION_DATA_SOURCE_ID`. Syncs upsert Notion rows and mark removed Notion rows inactive. Demo and manual items remain unchanged unless their normalized name exactly matches a Notion item.
+
+Notion sync also reconciles exact normalized names, so a demo or manual item named `SSO / SAML integration` is reused when Notion contains `SSO SAML Integration` instead of creating a duplicate. Existing request matches are preserved when duplicate roadmap rows are merged.
 
 ## Local development and tests
 
